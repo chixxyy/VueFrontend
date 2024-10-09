@@ -58,6 +58,8 @@
   </template>
   
   <script>
+  import axios from 'axios';
+  
   export default {
     data() {
       return {
@@ -68,16 +70,29 @@
       };
     },
     methods: {
-      handleSubmit() {
+      async handleSubmit() {
         if (this.password !== this.confirmPassword) {
           alert('密碼和確認密碼不一致！');
           return;
         }
-        console.log('註冊信息:', {
-          username: this.username,
-          email: this.email,
-          password: this.password,
-        });
+        
+        try {
+          const response = await axios.post('http://127.0.0.1:8000/register/', {
+            username: this.username,
+            email: this.email,
+            password: this.password,
+          });
+          
+          // 處理成功的回應
+          console.log('註冊成功:', response.data);
+          alert('註冊成功！');
+          // 例如，轉到登入頁面或主頁
+          this.$router.push('/LoginPage');
+        } catch (error) {
+          // 處理錯誤的回應
+          console.error('註冊失敗:', error.response.data);
+          alert('註冊失敗！請檢查您的資料。');
+        }
       },
     },
   };
